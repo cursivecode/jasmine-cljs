@@ -7,7 +7,7 @@ jasmine-cljs is a library for working with the jasmine testing framework
 Add the following dependency to your `project.clj` file:
 
 ```
-  [jasmine-cljs "0.1.1"]
+  [jasmine-cljs "0.1.2"]
 ```  
 
 ## Usage

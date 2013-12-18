@@ -1,4 +1,4 @@
-(defproject jasmine-cljs "0.1.1"
+(defproject jasmine-cljs "0.1.2"
   :description "Library for working with jasmine"
   :url "http://github.com/cursivecode/jasmine-cljs"
   :license {:name "Eclipse Public License"

@@ -57,11 +57,11 @@
         (expect foo :to-be-truthy)
         (dont-expect a :to-be-truthy)))
 
-  (it "The 'toBeFalsey' matcher is for boolean casting testing"
+  (it "The 'toBeFalsy' matcher is for boolean casting testing"
       (let [a nil
             foo "foo"]
-        (expect a :to-be-falsey)
-        (dont-expect foo :to-be-falsey)))
+        (expect a :to-be-falsy)
+        (dont-expect foo :to-be-falsy)))
 
   (it "The 'toContain' matcher is for finding an item in an Array"
       (let [a (array "foo" "bar" "baz")]
