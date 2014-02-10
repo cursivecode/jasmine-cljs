@@ -7,7 +7,7 @@ jasmine-cljs is a library for working with the jasmine testing framework
 Add the following dependency to your `project.clj` file:
 
 ```
-  [jasmine-cljs "0.1.3"]
+  [jasmine-cljs "0.1.4"]
 ```  
 
 ## Usage
@@ -15,7 +15,8 @@ Add the following dependency to your `project.clj` file:
 ```clojure
 (ns yourapp
   (:require-macros [jasmine-cljs.macros :refer [describe it expect dont-expect
-                                                before-each after-each xit xdescribe]]))
+                                                before-each after-each xit xdescribe
+                                                runs waits-for set-timeout]]))
 ```    
 
 ## jasmine-cljs - Jasmine Homepage
@@ -128,6 +129,36 @@ Add the following dependency to your `project.clj` file:
      (swap! foo inc))
     (xit "is just a function, so it can contain any code"
          (expect @foo :to-equal 1))))
+
+(describe "Testing angular inject feature with it"
+  (before-each (js/module "myApp"))
+
+  (it "should see scope value" [$rootScope $controller]
+      (let [scope (.$new $rootScope)
+            ctrl ($controller "MyController" (js-obj "$scope" scope))]
+        (expect (.-spice scope) :to-be "habanero"))))
+
+(describe "Testing angular inject feature with before-each"
+  (let [scope (atom 0)]
+    (before-each (js/module "myApp"))
+
+    (before-each [$rootScope $controller]
+      (let [scope (swap! scope (fn [_] (.$new $rootScope)))
+            ctrl ($controller "MyController" (js-obj "$scope" scope))]))
+
+    (it "should see scope value"
+        (expect (.-spice @scope) :to-be "habanero"))))
+
+(describe "Asynchronous specs"
+  (it "should support async execution of test preparation and expectations"
+      (let [flag (atom false)
+            value (atom 0)]
+        (runs
+         (set-timeout (reset! flag true) 500))
+        (waits-for
+         (reset! value 1) @flag "The Value should be incremented" 750)
+        (runs 
+         (expect @value :to-be-greater-than 0)))))
 ```
 
 ## Differences
@@ -140,7 +171,6 @@ Add the following dependency to your `project.clj` file:
 * Port Spies
 * Port Jasmine.any
 * Port Jasmine.Clock
-* Port Async support
 
 ## License
 
