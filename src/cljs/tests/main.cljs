@@ -1,6 +1,7 @@
 (ns jasmine-cljs.main-test
   (:require-macros [jasmine-cljs.macros :refer [describe it expect dont-expect
-                                                before-each after-each xit xdescribe]]))
+                                                before-each after-each xit xdescribe
+                                                runs waits-for set-timeout]]))
 
 (describe "A suite"
   (it "contains spec with an expectation"
@@ -130,6 +131,15 @@
     (it "should see scope value"
         (expect (.-spice @scope) :to-be "habanero"))))
 
-
+(describe "Asynchronous specs"
+  (it "should support async execution of test preparation and expectations"
+      (let [flag (atom false)
+            value (atom 0)]
+        (runs
+         (set-timeout (reset! flag true) 500))
+        (waits-for
+         (reset! value 1) @flag "The Value should be incremented" 750)
+        (runs 
+         (expect @value :to-be-greater-than 0)))))
 
 

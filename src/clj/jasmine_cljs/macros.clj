@@ -56,3 +56,15 @@
 (defmacro after-each
   [& body]
   `(js/afterEach (fn [] ~@body)))
+
+(defmacro runs
+  [& body]
+  `(js/runs (fn [] ~@body)))
+
+(defmacro waits-for
+  [& body]
+  `(js/waitsFor (fn [] ~@body)))
+
+(defmacro set-timeout
+  [& body]
+  `(js/setTimeout (fn [] ~@body)))
