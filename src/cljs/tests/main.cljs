@@ -94,7 +94,7 @@
 
 (describe "A spec (with setup and tear-down)"
   (let [foo (atom 0)]
-    (before-each 
+    (before-each
      (swap! foo inc))
     (after-each
      (reset! foo 0))
@@ -110,4 +110,26 @@
      (swap! foo inc))
     (xit "is just a function, so it can contain any code"
          (expect @foo :to-equal 1))))
+
+(describe "Testing angular inject feature with it"
+  (before-each (js/module "myApp"))
+
+  (it "should see scope value" [$rootScope $controller]
+      (let [scope (.$new $rootScope)
+            ctrl ($controller "MyController" (js-obj "$scope" scope))]
+        (expect (.-spice scope) :to-be "habanero"))))
+
+(describe "Testing angular inject feature with before-each"
+  (let [scope (atom 0)]
+    (before-each (js/module "myApp"))
+
+    (before-each [$rootScope $controller]
+      (let [scope (swap! scope (fn [_] (.$new $rootScope)))
+            ctrl ($controller "MyController" (js-obj "$scope" scope))]))
+
+    (it "should see scope value"
+        (expect (.-spice @scope) :to-be "habanero"))))
+
+
+
 

@@ -9,6 +9,6 @@
   :source-paths ["src/clj"]
   :cljsbuild {:builds {:cljstest {:source-paths ["src/cljs/tests"]
                               :compiler {:output-to "resources/public/js/tests.js"
-                                         :optimizations :simple
+                                         :optimizations :whitespace
                                          :pretty-print true}}}
               })
