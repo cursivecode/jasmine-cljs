@@ -1,6 +1,7 @@
 (ns jasmine-cljs.main-test
   (:require-macros [jasmine-cljs.macros :refer [describe it expect dont-expect
-                                                before-each after-each xit xdescribe
+                                                before-each after-each xit
+                                                xdescribe create-spy
                                                 runs waits-for set-timeout]]))
 
 (describe "A suite"
@@ -156,4 +157,42 @@
         (runs 
          (expect @value :to-be-greater-than 0)))))
 
+(describe "A spy, when created manually"
+  (let [whatAmI (atom nil)]
+    (before-each
+      (reset! whatAmI (create-spy "whatAmI"))
+      (@whatAmI "I" "am" "a" "spy"))
 
+    (it "is named, which helps in error reporting"
+      (expect (.-identity @whatAmI) :to-equal "whatAmI"))
+    (it "tracks that the spy was called"
+      (expect @whatAmI :to-have-been-called))
+    (it "tracks its number of calls"
+      (expect (.. @whatAmI -calls -length) :to-equal 1))
+    (it "tracks all the arguments of its calls"
+      (expect @whatAmI :to-have-been-called-with "I" "am" "a" "spy"))
+    (it "allows access to the most recent call"
+      (expect (-> @whatAmI (.. -mostRecentCall -args) (aget 0))
+              :to-equal
+              "I"))))
+
+(describe "Multiple spies, when created manually"
+  (let [tape (create-spy "tape" ["play" "pause" "stop" "rewind"])]
+    (.play tape)
+    (.pause tape)
+    (.rewind tape 0)
+
+    (it "creates spies for each requested function"
+      (expect (.-play tape) :to-be-defined)
+      (expect (.-pause tape) :to-be-defined)
+      (expect (.-stop tape) :to-be-defined)
+      (expect (.-rewind tape) :to-be-defined))
+
+    (it "tracks that the spies were called"
+      (expect (.-play tape) :to-have-been-called)
+      (expect (.-pause tape) :to-have-been-called)
+      (expect (.-rewind tape) :to-have-been-called)
+      (dont-expect (.-stop tape) :to-have-been-called))
+
+    (it "tracks all the arguments of its calls"
+      (expect (.-rewind tape) :to-have-been-called-with 0))))

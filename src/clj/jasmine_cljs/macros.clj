@@ -89,3 +89,9 @@
 (defmacro set-timeout
   [& body]
   `(js/setTimeout (fn [] ~@body)))
+
+(defmacro create-spy
+  ([] `(.createSpy js/jasmine "anonymous"))
+  ([name] `(.createSpy js/jasmine ~name))
+  ([name methods]
+     `(.createSpyObj js/jasmine ~name (cljs.core/array ~@(map str methods)))))
