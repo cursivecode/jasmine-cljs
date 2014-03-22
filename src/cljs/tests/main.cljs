@@ -1,8 +1,8 @@
 (ns jasmine-cljs.main-test
-  (:require-macros [jasmine-cljs.macros :refer [describe it expect dont-expect
-                                                before-each after-each xit
-                                                xdescribe create-spy
-                                                runs waits-for set-timeout]]))
+  (:require-macros [jasmine-cljs.macros :refer [describe xit expect dont-expect
+                                                before-each after-each waits-for
+                                                xdescribe create-spy set-timeout
+                                                it runs use-mock-clock after]]))
 
 (describe "A suite"
   (it "contains spec with an expectation"
@@ -196,3 +196,23 @@
 
     (it "tracks all the arguments of its calls"
       (expect (.-rewind tape) :to-have-been-called-with 0))))
+
+(describe "Manually ticking the Jasmine Mock Clock"
+  (use-mock-clock)
+  (it "causes a timeout to be called synchronously"
+    (let [spy (create-spy)]
+      (js/setTimeout spy 100)
+      (dont-expect spy :to-have-been-called)
+      (after 101
+        (expect spy :to-have-been-called))))
+
+  (it "causes an interval to be called synchronously"
+    (let [spy (create-spy)]
+      (js/setInterval spy 100)
+      (dont-expect spy :to-have-been-called)
+      (after 101
+        (expect (.-callCount spy) :to-equal 1))
+      (after 50
+        (expect (.-callCount spy) :to-equal 1))
+      (after 50
+        (expect (.-callCount spy) :to-equal 2)))))

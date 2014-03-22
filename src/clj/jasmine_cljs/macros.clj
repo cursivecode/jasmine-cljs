@@ -95,3 +95,10 @@
   ([name] `(.createSpy js/jasmine ~name))
   ([name methods]
      `(.createSpyObj js/jasmine ~name (cljs.core/array ~@(map str methods)))))
+
+(defmacro use-mock-clock []
+  `(js/beforeEach (fn [] (-> js/jasmine .-Clock .useMock))))
+
+(defmacro after [millis & body]
+  `(do (-> js/jasmine .-Clock (.tick ~millis))
+       ~@body))
