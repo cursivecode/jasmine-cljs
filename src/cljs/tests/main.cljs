@@ -29,10 +29,16 @@
     (it "works for simple literals and variables"
         (let [a 12]
           (expect a :to-equal 12)))
-    (it "should work for objects"
-        (let [foo (js-obj "a" 12 "b" 34)
-              bar (js-obj "a" 12 "b" 34)]
+    (it "works based on clojure equality semantics"
+        (let [foo {"a" 12 "b" 34}
+              bar (conj {"a" 12} {"b" 34})]
           (expect foo :to-equal bar))))
+
+  (describe "The :to-equal-js matcher"
+    (it "should work for js objects"
+      (let [foo (js-obj "a" 12 "b" 34)
+            bar (js-obj "a" 12 "b" 34)]
+        (expect foo :to-equal-js bar))))
 
   (it "The :to-match matcher is for regular expressions"
       (let [message "foo bar baz"]
@@ -52,17 +58,25 @@
         (expect a :to-be-nil)
         (dont-expect foo :to-be-nil)))
 
-  (it "The 'toBeTruthy' matcher is for boolean casting testing"
+  (it "The :to-be-truthy matcher tests for clojure truthiness"
       (let [foo "foo"
             a nil]
         (expect foo :to-be-truthy)
-        (dont-expect a :to-be-truthy)))
+        (dont-expect a :to-be-truthy)
+        (expect 0 :to-be-truthy)))
 
-  (it "The 'toBeFalsy' matcher is for boolean casting testing"
+  (it "The :to-be-truthy-js matcher test for javascript truthiness"
+    (dont-expect 0 :to-be-truthy-js))
+
+  (it "The :to-be-falsy matcher tests for clojure falsiness"
       (let [a nil
             foo "foo"]
         (expect a :to-be-falsy)
-        (dont-expect foo :to-be-falsy)))
+        (dont-expect foo :to-be-falsy)
+        (dont-expect 0 :to-be-falsy)))
+
+  (it "The :to-be-falsy-js matcher tests for javascript falsiness"
+    (expect 0 :to-be-falsy-js))
 
   (it "The :to-contain matcher is for finding an item in an Array"
       (let [a (array "foo" "bar" "baz")]
