@@ -12,20 +12,20 @@
       (let [a true]
         (expect a :to-be true))))
 
-(describe "The toBe matcher compares with ==="
-  (it "and has a positive case"
+(describe "expect"
+  (it "has a positive case"
       (expect true :to-be true))
-  (it "and can have a negative case"
+  (it "and a negative case"
       (dont-expect false :to-be true)))
 
 (describe "Included matchers:"
-  (it "The 'toBe' matcher compares with ==="
+  (it "The :to-be matcher compares with ==="
       (let [a 12
             b a]
         (expect a :to-be b)
         (dont-expect a :to-be nil)))
 
-  (describe "The 'toEqual' matcher"
+  (describe "The :to-equal matcher"
     (it "works for simple literals and variables"
         (let [a 12]
           (expect a :to-equal 12)))
@@ -34,18 +34,18 @@
               bar (js-obj "a" 12 "b" 34)]
           (expect foo :to-equal bar))))
 
-  (it "The 'toMatch' matcher is for regular expressions"
+  (it "The :to-match matcher is for regular expressions"
       (let [message "foo bar baz"]
         (expect message :to-match (re-pattern "bar"))
         (expect message :to-match "bar")
         (dont-expect message :to-match (re-pattern "quux"))))
 
-  (it "The 'toBeDefined' matcher compares against 'undefined'"
+  (it "The :to-be-defined matcher compares against 'undefined'"
       (let [a (js-obj "foo" "foo")]
         (expect (aget a "foo") :to-be-defined)
         (expect (aget a "bar") :to-be-undefined)))
 
-  (it "The 'toBeNull' matcher compares against null"
+  (it "The :to-be-nil matcher compares against null"
       (let [a nil
             foo "foo"]
         (expect nil :to-be-nil)
@@ -64,12 +64,12 @@
         (expect a :to-be-falsy)
         (dont-expect foo :to-be-falsy)))
 
-  (it "The 'toContain' matcher is for finding an item in an Array"
+  (it "The :to-contain matcher is for finding an item in an Array"
       (let [a (array "foo" "bar" "baz")]
         (expect a :to-contain "bar")
         (dont-expect a :to-contain "quux")))
 
-  (it "The 'toBeLessThan' matcher is for mathematical comparisons"
+  (it "The :to-be-less-than matcher is for mathematical comparisons"
       (let [pi 3.1415926
             e 2.78]
         (expect e :to-be-less-than pi)
@@ -81,13 +81,13 @@
         (expect pi :to-be-greater-than e)
         (dont-expect e :to-be-greater-than pi)))
 
-  (it "The 'toBeCloseTo' matcher is for precision math comparison"
+  (it "The :to-be-close-to matcher is for precision math comparison"
       (let [pi 3.1415926
             e 2.78]
         (dont-expect pi :to-be-close-to e 2)
         (expect pi :to-be-close-to e 0)))
 
-  (it "The 'toThrow' matcher is for testing if a function throws an expection"
+  (it "The :to-throw matcher is for testing if a function throws an expection"
       (let [foo (fn [] (+ 1 2))
             bar (fn [] (throw "exception"))]
         (dont-expect foo :to-throw)
