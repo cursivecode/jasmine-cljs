@@ -127,24 +127,24 @@
     (xit "is just a function, so it can contain any code"
          (expect @foo :to-equal 1))))
 
-(describe "Testing angular inject feature with it"
-  (before-each (js/module "myApp"))
+;; (describe "Testing angular inject feature with it"
+;;   (before-each (js/module "myApp"))
 
-  (it "should see scope value" [$rootScope $controller]
-      (let [scope (.$new $rootScope)
-            ctrl ($controller "MyController" (js-obj "$scope" scope))]
-        (expect (.-spice scope) :to-be "habanero"))))
+;;   (it "should see scope value" [$rootScope $controller]
+;;       (let [scope (.$new $rootScope)
+;;             ctrl ($controller "MyController" (js-obj "$scope" scope))]
+;;         (expect (.-spice scope) :to-be "habanero"))))
 
-(describe "Testing angular inject feature with before-each"
-  (let [scope (atom 0)]
-    (before-each (js/module "myApp"))
+;; (describe "Testing angular inject feature with before-each"
+;;   (let [scope (atom 0)]
+;;     (before-each (js/module "myApp"))
 
-    (before-each [$rootScope $controller]
-      (let [scope (swap! scope (fn [_] (.$new $rootScope)))
-            ctrl ($controller "MyController" (js-obj "$scope" scope))]))
+;;     (before-each [$rootScope $controller]
+;;       (let [scope (swap! scope (fn [_] (.$new $rootScope)))
+;;             ctrl ($controller "MyController" (js-obj "$scope" scope))]))
 
-    (it "should see scope value"
-        (expect (.-spice @scope) :to-be "habanero"))))
+;;     (it "should see scope value"
+;;         (expect (.-spice @scope) :to-be "habanero"))))
 
 (describe "Asynchronous specs"
   (it "should support async execution of test preparation and expectations"
