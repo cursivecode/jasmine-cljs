@@ -6,14 +6,35 @@
     (symbol (s/join "" (cons (s/lower-case (str "." (first words)))
                              (map s/capitalize (rest words)))))))
 
+(defmacro cljs-matchers []
+  `'(cljs.core/js-obj
+      "cljsToEqual" (fn [expected#]
+                      (cljs.core/this-as t# (= (.-actual t#) expected#)))
+      "cljsToBeTruthy" (fn [expected#]
+                         (cljs.core/this-as t# (boolean (.-actual t#))))
+      "cljsToBeFalsy" (fn [expected#]
+                        (cljs.core/this-as t# (not (boolean (.-actual t#)))))))
+
 (defn matchers [matcher]
-  (let [m {:to-be-nil '.toBeNull}]
+  (let [m {:to-be-nil '.toBeNull
+           :to-equal '.cljsToEqual
+           :to-equal-js '.toEqual
+           :to-be-truthy '.cljsToBeTruthy
+           :to-be-truthy-js '.toBeTruthy
+           :to-be-falsy '.cljsToBeFalsy
+           :to-be-falsy-js '.toBeFalsy}]
     (or (m matcher)
         (key->method matcher))))
 
 (defmacro describe
   [desc & body]
-  `(js/describe ~desc (fn [] ~@body)))
+  `(js/describe
+     ~desc
+     (fn []
+       (js/beforeEach
+         (fn []
+           (cljs.core/this-as t# (.addMatchers t# ~(cljs-matchers)))))
+       ~@body)))
 
 (defmacro it
   [title & body]
@@ -68,3 +89,16 @@
 (defmacro set-timeout
   [& body]
   `(js/setTimeout (fn [] ~@body)))
+
+(defmacro create-spy
+  ([] `(.createSpy js/jasmine "anonymous"))
+  ([name] `(.createSpy js/jasmine ~name))
+  ([name methods]
+     `(.createSpyObj js/jasmine ~name (cljs.core/array ~@(map str methods)))))
+
+(defmacro use-mock-clock []
+  `(js/beforeEach (fn [] (-> js/jasmine .-Clock .useMock))))
+
+(defmacro after [millis & body]
+  `(do (-> js/jasmine .-Clock (.tick ~millis))
+       ~@body))
