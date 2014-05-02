@@ -7,7 +7,7 @@ jasmine-cljs is a library for working with the jasmine testing framework
 Add the following dependency to your `project.clj` file:
 
 ```
-  [jasmine-cljs "0.1.4"]
+  [jasmine-cljs "0.1.5"]
 ```  
 
 ## Usage
@@ -168,9 +168,7 @@ Add the following dependency to your `project.clj` file:
 
 ## TODOS
 
-* Port Spies
 * Port Jasmine.any
-* Port Jasmine.Clock
 
 ## License
 
